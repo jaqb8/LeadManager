@@ -1,6 +1,13 @@
-import React from 'react';
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { getLeads } from "../../actions/leads";
 
-const Leads = () => {
+const Leads = ({ getLeads }) => {
+  useEffect(() => {
+    getLeads();
+  }, [getLeads]);
+
   return (
     <div>
       <h1>Leads List</h1>
@@ -8,4 +15,8 @@ const Leads = () => {
   );
 };
 
-export default Leads;
+Leads.propTypes = {
+  getLeads: PropTypes.func.isRequired
+};
+
+export default connect(null, { getLeads })(Leads);

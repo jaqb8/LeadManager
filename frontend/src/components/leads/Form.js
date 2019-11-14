@@ -15,6 +15,11 @@ const Form = ({ addLead }) => {
   const onSubmit = e => {
     e.preventDefault();
     addLead(formData);
+    setFormData({
+      name: '',
+      email: '',
+      message: ''
+    });
   };
 
   const onChange = e => {

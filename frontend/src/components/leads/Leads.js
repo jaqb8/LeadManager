@@ -1,22 +1,57 @@
-import React, { useEffect } from "react";
+import React, { useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { getLeads } from "../../actions/leads";
+import { getLeads, deleteLead } from "../../actions/leads";
 
-const Leads = ({ getLeads }) => {
+const Leads = ({ getLeads, deleteLead, leads }) => {
   useEffect(() => {
     getLeads();
   }, [getLeads]);
 
   return (
-    <div>
-      <h1>Leads List</h1>
-    </div>
+    <Fragment>
+      <h2>Leads</h2>
+      <table className="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Message</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {leads.map(lead => (
+            <tr key={lead.id}>
+              <td>{lead.id}</td>
+              <td>{lead.name}</td>
+              <td>{lead.email}</td>
+              <td>{lead.message}</td>
+              <td>
+                <button
+                  onClick={() => deleteLead(lead.id)}
+                  className="btn btn-danger btn-sm"
+                >
+                  X
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Fragment>
   );
 };
 
 Leads.propTypes = {
-  getLeads: PropTypes.func.isRequired
+  getLeads: PropTypes.func.isRequired,
+  deleteLead: PropTypes.func.isRequired,
+  leads: PropTypes.array.isRequired
 };
 
-export default connect(null, { getLeads })(Leads);
+const mapStateToProps = state => ({
+  leads: state.leads.leads
+});
+
+export default connect(mapStateToProps, { getLeads, deleteLead })(Leads);

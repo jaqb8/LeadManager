@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Header from './layout/Header';
 import Dashboard from './leads/Dashboard';
@@ -16,6 +16,7 @@ import {
 import Login from './accounts/Login';
 import Register from './accounts/Register';
 import PrivateRoute from './routing/PrivateRoute';
+import { loadUser } from '../actions/auth';
 
 // Alert Options
 const alertOptions = {
@@ -24,6 +25,10 @@ const alertOptions = {
 };
 
 const App = () => {
+  useEffect(() => {
+    store.dispatch(loadUser());
+  }, []);
+
   return (
     <Provider store={store}>
       <AlertProvider template={AlertTemplate} {...alertOptions}>

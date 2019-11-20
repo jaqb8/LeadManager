@@ -1,8 +1,10 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { logout } from '../../actions/auth';
 
-const Header = ({ auth: { isAuthenticated, loading } }) => (
+const Header = ({ logout, auth: { isAuthenticated, loading, user } }) => (
   <nav className='navbar navbar-expand-sm navbar-light bg-light'>
     <div className='container'>
       <button
@@ -37,10 +39,16 @@ const Header = ({ auth: { isAuthenticated, loading } }) => (
               </Fragment>
             ) : (
               <Fragment>
+                <span className='navbar-text mr-3'>
+                  <strong>{user ? `Welcome ${user.username}` : ''}</strong>
+                </span>
                 <li className='nav-item'>
-                  <Link to='/logout' className='nav-link'>
+                  <button
+                    onClick={() => logout()}
+                    className='nav-link btn btn-dark btn-sm text-light'
+                  >
                     Logout
-                  </Link>
+                  </button>
                 </li>
               </Fragment>
             ))}
@@ -51,11 +59,12 @@ const Header = ({ auth: { isAuthenticated, loading } }) => (
 );
 
 Header.propTypes = {
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
+  logout: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   auth: state.auth
 });
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps, { logout })(Header);

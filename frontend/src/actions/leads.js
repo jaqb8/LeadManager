@@ -3,11 +3,12 @@ import axios from 'axios';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import { createMessage, returnErrors } from './messages';
+import { tokenConfig } from './auth';
 
 // Get Leads
-export const getLeads = () => async dispatch => {
+export const getLeads = () => async (dispatch, getState) => {
   try {
-    const res = await axios.get('/api/leads');
+    const res = await axios.get('/api/leads', tokenConfig(getState));
 
     dispatch({
       type: GET_LEADS,
@@ -19,9 +20,9 @@ export const getLeads = () => async dispatch => {
 };
 
 // Delete Lead
-export const deleteLead = id => async dispatch => {
+export const deleteLead = id => async (dispatch, getState) => {
   try {
-    await axios.delete(`api/leads/${id}`);
+    await axios.delete(`api/leads/${id}`, tokenConfig(getState));
 
     dispatch(createMessage({ deleteLead: 'Lead Deleted' }));
 
@@ -35,15 +36,9 @@ export const deleteLead = id => async dispatch => {
 };
 
 // Add Lead
-export const addLead = formData => async dispatch => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-
+export const addLead = formData => async (dispatch, getState) => {
   try {
-    const res = await axios.post('api/leads/', formData, config);
+    const res = await axios.post('api/leads/', formData, tokenConfig(getState));
 
     dispatch(createMessage({ addLead: 'Lead Added' }));
 

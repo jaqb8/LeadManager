@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { register } from '../../actions/auth';
+import { createMessage } from '../../actions/messages';
 
-const Register = () => {
+const Register = ({ createMessage, register, auth: { isAuthenticated } }) => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -13,12 +17,18 @@ const Register = () => {
 
   const onSubmit = e => {
     e.preventDefault();
-    console.log('Submit');
+    password !== password2
+      ? createMessage({ passwordsNotMatch: 'Passwords do not match' })
+      : register({ username, email, password });
   };
 
   const onChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  if (isAuthenticated) {
+    return <Redirect to='/' />;
+  }
 
   return (
     <div className='col-md-6 m-auto'>
@@ -79,4 +89,13 @@ const Register = () => {
   );
 };
 
-export default Register;
+Register.propTypes = {
+  register: PropTypes.func.isRequired,
+  createMessage: PropTypes.func
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(mapStateToProps, { register, createMessage })(Register);
